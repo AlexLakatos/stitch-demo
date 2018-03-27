@@ -15,6 +15,10 @@
     min-width: 100px;
 }
 
+.divider {
+    width: 100%;
+}
+
 .empty-conversation {
     display: flex;
     align-items: center;
@@ -44,6 +48,15 @@
     margin: 0;
 }
 
+.conversation-history .mat-list-item, .members .mat-list-item {
+    height: 100px !important;
+    font-size: 50px;
+}
+
+.conversation-history .mat-list-item {
+    line-height: 60px;
+}
+
 .empty-conversation h1 {
     margin: 0;
 }
@@ -53,9 +66,9 @@
 }
 
 .create-conversation {
-    position: relative;
-    float: right;
-    padding: 30px 0;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
 }
 
 .mat-card {
@@ -70,9 +83,9 @@
     background-color: #fafafa;
 }
 
-section .mat-list .mat-list-avatar{
-    width: 25px;
-    height: 25px;
+section .mat-list .mat-list-avatar, .members img {
+    width: 50px;
+    height: 50px;
 }
 
 .mat-list-avatar {

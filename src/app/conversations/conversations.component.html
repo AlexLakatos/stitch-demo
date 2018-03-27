@@ -6,18 +6,16 @@
           <ng-template mat-tab-label>
             <mat-icon matListIcon>forum</mat-icon>
           </ng-template>
+            <button mat-fab class="create-conversation" (click)="createConversation()">
+              <mat-icon aria-label="Create Conversation">add</mat-icon>
+            </button>
           <mat-list class="conversations">
             <mat-list-item *ngFor="let conversation of conversations" (click)="selectConversation(conversation.id)">
               <mat-icon matListIcon>forum</mat-icon>
               <p>{{conversation.display_name}}</p>
             </mat-list-item>
-            <mat-list-item class="create-conversation">
-              <button mat-fab (click)="createConversation()">
-                <mat-icon aria-label="Create Conversation">add</mat-icon>
-              </button>
-            </mat-list-item>
           </mat-list>
-          <hr>
+          <hr class="divider">
           <mat-list class="all-conversations">
               <mat-list-item *ngFor="let conversation of allConversations" (click)="selectAndJoinConversation(conversation.id)">
                 <mat-icon matListIcon>forum</mat-icon>
@@ -41,10 +39,12 @@
   </mat-sidenav>
   <mat-sidenav position="end" mode="side" opened *ngIf="selectedConversation">
     <mat-card>
-      <mat-list>
+      <mat-list class="members">
         <mat-list-item *ngFor="let member of selectedConversation.members | keys">
-          <img matListAvatar src="https://randomuser.me/api/portraits/thumb/{{nameToImage(member.value.id).prefix}}men/{{nameToImage(member.value.id).index}}.jpg"
-          />
+            <img *ngIf="member.value.id === selectedConversation.me.id" matListAvatar src="assets/alex.png"
+            />
+            <img *ngIf="member.value.id !== selectedConversation.me.id" matListAvatar src="assets/bot.png"
+            />
           <p>{{member.value.user.name}}</p>
         </mat-list-item>
       </mat-list>
@@ -65,8 +65,10 @@
 
     <mat-divider></mat-divider>
     <mat-list dense class="conversation-history mat-typography">
-      <mat-list-item *ngFor="let event of selectedConversation.events.values()" [dir]="event.from === selectedConversation.me.id ? 'rtl' : 'ltr'">
-        <img *ngIf="event.type == 'text'" matListAvatar matTooltip="{{selectedConversation.members[event.from].user.name}}" src="https://randomuser.me/api/portraits/thumb/{{nameToImage(event.from).prefix}}men/{{nameToImage(event.from).index}}.jpg"
+      <mat-list-item *ngFor="let event of events" [dir]="event.from === selectedConversation.me.id ? 'rtl' : 'ltr'">
+        <img *ngIf="event.type == 'text' && event.from === selectedConversation.me.id" matListAvatar matTooltip="{{selectedConversation.members[event.from].user.name}}" src="assets/alex.png"
+        />
+        <img *ngIf="event.type == 'text' && event.from !== selectedConversation.me.id" matListAvatar matTooltip="{{selectedConversation.members[event.from].user.name}}" src="assets/bot.png"
         />
         <p *ngIf="event.type == 'text'" [dir]="'ltr'">{{event.body.text}}</p>
         <p *ngIf="event.type == 'member:invited'" class="text-center">
@@ -83,6 +85,8 @@
     <div class="conversation-input">
       <mat-divider></mat-divider>
       <mat-form-field class="full-width">
+        <mat-icon *ngIf="!recognition" matPrefix (click)="toggleVoice()">mic</mat-icon>
+        <mat-icon *ngIf="recognition" matPrefix>mic_none</mat-icon>
         <input matInput placeholder="Start chatting..." name="text" [(ngModel)]="text">
         <mat-icon matSuffix (click)="sendText(text)">send</mat-icon>
       </mat-form-field>
